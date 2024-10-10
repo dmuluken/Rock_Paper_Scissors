@@ -1,76 +1,91 @@
 // This function gets a random number between 0 and 2. Later 0 will be assignen to Rock 1 to Paper and 2 to Scissors.
 
 function getComputerChoice() {
-    return Math.round(Math.random() * 2);
+    return Math.floor(Math.random() * (3));
 }
 
 // This function gets a users choice and changes into a number between 0 and 2.
 
-function getHumanChoice() {
-    let code = 0;
-    let answer = "";
-    while (true) {
-        answer = prompt("Please choose between Rock, Paper, and Scissors?");
-        answer = answer.toLowerCase();
-        if (answer == "rock") {
+let inputs = document.querySelector(".inputs");
+let output = document.querySelector(".output");
+let reset = document.querySelector(".reset");
+
+const winner = document.createElement("p");
+output.appendChild(winner);
+
+inputs.addEventListener("click", (event) => {
+    let target = event.target;
+    let code = 1;
+
+    switch (target.id) {
+        case 'rock':
             code = 0;
             break;
-        } else if (answer == "paper") {
+        case 'paper':
             code = 1;
             break;
-        } else if (answer == "scissors") {
+        case 'scissors':
             code = 2;
             break;
-        } else {
-            console.log("Wrong choice please try again.");
-        }
     }
-    return code;
-}
+    const computerSelection = getComputerChoice();
+    playRound(code, computerSelection);
+})
 
 let humanScore = 0;
 let computerScore = 0;
+let draw = 0;
 
 // This function is used to play one round as per the rules of Rock, Paper, Scissors. Rock crushes scissors, scissors cuts paper and paper covers rock. If user and computer draw the same choice user is asked to choose again. 
 
 function playRound(humanSelection, computerSelection) {
+
+
     if (humanSelection == computerSelection) {
-        console.log("Choice same with computer, please try again?");
-        humanSelection = getHumanChoice();
-        computerSelection = getComputerChoice();
-        playRound(humanSelection, computerSelection);
+        draw += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else if (humanSelection == 0 && computerSelection == 1) {
-        console.log("You loose! Paper covers Rock!");
         computerScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else if (humanSelection == 1 && computerSelection == 0) {
-        console.log("You win! Paper covers Rock!");
         humanScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else if (humanSelection == 1 && computerSelection == 2) {
-        console.log("You loose! Scissors cuts Paper!");
         computerScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else if (humanSelection == 2 && computerSelection == 1) {
-        console.log("You win! Scissors cuts Paper!");
         humanScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else if (humanSelection == 2 && computerSelection == 0) {
-        console.log("You loose! Rock crushes Scissors!");
         computerScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
     } else {
-        console.log("You win! Rock crushes Scissors!");
         humanScore += 1;
+        winner.innerText = `You have won ${humanScore} times, the computer has won ${computerScore} times. You have drawn ${draw} times.`;
+    }
+
+    if (humanScore == 5) {
+        winner.innerText = "Congratulations! You have won!";
+        let resetButton = document.createElement("button");
+        resetButton.innerText = "Reset";
+        reset.appendChild(resetButton);
+        resetButton.addEventListener("click", () => {
+            humanScore = 0;
+            computerScore = 0;
+            winner.innerText = "";
+            reset.removeChild(resetButton);
+        })
+    } else if (computerScore == 5) {
+        winner.innerText = "Sorry! The computer has won!";
+        let resetButton = document.createElement("button");
+        resetButton.innerText = "Reset";
+        reset.appendChild(resetButton);
+        resetButton.addEventListener("click", () => {
+            humanScore = 0;
+            computerScore = 0;
+            winner.innerText = "";
+            reset.removeChild(resetButton);
+        })
     }
 }
 
-// The game will be played five times.
-
-function playGame() {
-    for (let i = 1; i <= 5; i++) {
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
-
-        playRound(humanSelection, computerSelection);
-    };
-}
-
-playGame();
-
-console.log(`You have won ${humanScore} times where the computer has won ${computerScore} times.`);
